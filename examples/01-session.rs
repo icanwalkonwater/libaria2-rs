@@ -6,11 +6,15 @@ fn main() {
         libaria2::ffi::library_init();
 
         println!("Create session");
-        let session = libaria2::ffi::session_new(&vec![], &SessionConfigFfi {
-            keep_running: false,
-            use_signal_handler: false,
-            user_data: 0,
-        });
+        let session = libaria2::ffi::session_new(
+            &vec![],
+            &SessionConfigFfi {
+                keep_running: false,
+                use_signal_handler: false,
+                user_data: 0,
+            },
+            |_, _, _, _| 0,
+        );
 
         // Do something maybe ?
 
