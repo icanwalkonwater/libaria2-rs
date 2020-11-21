@@ -1,0 +1,11 @@
+[package]
+name = "libaria2"
+version = "0.1.0"
+authors = ["Lucas Malandrino <lucas.malandrino@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+cxx = "^1.0.1"
+
+[build-dependencies]
+cxx-build = "^1.0.1"
