@@ -13,6 +13,9 @@ namespace aria2 {
     namespace bridge {
         static rust::Fn<int(SessionHandle s, DownloadEvent e, A2Gid g, size_t user)> EVENT_RUST_CALLBACK;
 
+        // Library init/deinit
+        // <editor-fold>
+
         int library_init() {
             return aria2::libraryInit();
         }
@@ -20,6 +23,10 @@ namespace aria2 {
         int library_deinit() {
             return aria2::libraryDeinit();
         }
+        // </editor-fold>
+
+        // Session
+        // <editor-fold>
 
         SessionHandle session_new(
                 const RKeyVals& rustOptions,
@@ -44,9 +51,16 @@ namespace aria2 {
             return aria2::sessionFinal((Session*) session.ptr);
         }
 
+        // </editor-fold>
+
+        // Run
+
         int run(SessionHandle session, aria2::RUN_MODE runMode) {
             return aria2::run((Session*) session.ptr, runMode);
         }
+
+        // Utils
+        // <editor-fold>
 
         rust::String gid_to_hex(A2Gid gid) {
             return rust::String(aria2::gidToHex(gid));
@@ -59,6 +73,10 @@ namespace aria2 {
         bool is_gid_null(A2Gid gid) {
             return aria2::isNull(gid);
         }
+        // </editor-fold>
+
+        // Adds
+        // <editor-fold>
 
         int add_uri(SessionHandle session, A2Gid& gid, const rust::Vec<rust::String>& rustUris,
                     const RKeyVals& rustOptions, int position) {
@@ -109,8 +127,65 @@ namespace aria2 {
 
             return aria2::addTorrent((Session*) session.ptr, &gid, std::string(torrentFile), webSeedUris, options, position);
         }
+        // </editor-fold>
+
+        // Download control
+        // <editor-fold>
+
+        rust::Vec<A2Gid> get_active_download(SessionHandle session) {
+            std::vector<A2Gid> res = aria2::getActiveDownload((Session*) session.ptr);
+            rust::Vec<A2Gid> rustRes;
+            std::copy(res.begin(), res.end(), std::back_inserter(rustRes));
+
+            return rustRes;
+        }
+
+        int remove_download(SessionHandle session, A2Gid gid, bool force) {
+            return aria2::removeDownload((Session*) session.ptr, gid, force);
+        }
+
+        int pause_download(SessionHandle session, A2Gid gid, bool force) {
+            return aria2::pauseDownload((Session*) session.ptr, gid, force);
+        }
+
+        int unpause_download(SessionHandle session, A2Gid gid) {
+            return aria2::unpauseDownload((Session*) session.ptr, gid);
+        }
+
+        // </editor-fold>
+
+        // Options
+        // <editor-fold>
+
+        int change_option(SessionHandle session, A2Gid gid, const RKeyVals& rustOptions) {
+            aria2::KeyVals options;
+            __convert_key_vals(rustOptions, options);
+
+            return aria2::changeOption((Session*) session.ptr, gid, options);
+        }
+
+        rust::Str get_global_option(SessionHandle session, const rust::Str name) {
+            return rust::Str(aria2::getGlobalOption((Session*) session.ptr, std::string(name)));
+        }
+
+        RKeyVals get_global_options(SessionHandle session) {
+            aria2::KeyVals options(aria2::getGlobalOptions((Session*) session.ptr));
+            RKeyVals rustOptions;
+            __convert_key_vals_back(options, rustOptions);
+
+            return rustOptions;
+        }
+
+        int change_global_option(SessionHandle session, const RKeyVals& rustOptions) {
+            aria2::KeyVals options;
+            __convert_key_vals(rustOptions, options);
+
+            return aria2::changeGlobalOption((Session*) session.ptr, options);
+        }
+        // </editor-fold>
 
         // Internals
+        // <editor-fold>
 
         int __event_callback_delegate(Session* session, DownloadEvent event, A2Gid gid, void* userData) {
             return EVENT_RUST_CALLBACK(
@@ -127,5 +202,17 @@ namespace aria2 {
                 dst.push_back({ std::string(item.key), std::string(item.val) });
             }
         }
+
+        void __convert_key_vals_back(const aria2::KeyVals& src, RKeyVals& dst) {
+            dst.reserve(src.size());
+            for (auto item : src) {
+                dst.push_back({
+                    .key = rust::String(item.first),
+                    .val = rust::String(item.second),
+                });
+            }
+        }
+
+        // </editor-fold>
     }
 }

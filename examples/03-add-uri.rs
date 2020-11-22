@@ -17,7 +17,7 @@ fn main() {
             },
             |_, event, gid, _| {
                 let event: DownloadEvent = event.into();
-                println!("[Event] {:?} gid {}", event, libaria2::ffi::gid_to_hex(gid));
+                println!("[Event] {:?} gid {:x}", event, gid);
                 0
             },
         );
@@ -39,7 +39,7 @@ fn main() {
         );
 
         if res == 0 {
-            println!("AddUri success, GID: {}", libaria2::ffi::gid_to_hex(gid));
+            println!("AddUri success, GID: {:x}", gid);
         } else {
             eprintln!("AddUri failed: {}", res);
         }

@@ -1,5 +1,5 @@
-use libaria2::ffi::{DownloadEvent, SessionConfigFfi};
-use libaria2::RunMode;
+use libaria2::ffi::{SessionConfigFfi};
+use libaria2::{RunMode, DownloadEvent};
 
 fn main() {
     unsafe {
@@ -14,8 +14,8 @@ fn main() {
                 user_data: 0,
             },
             |_, event, gid, _| {
-                let event_id = std::mem::transmute::<DownloadEvent, u32>(event);
-                println!("Event {} for gid {}", event_id, gid);
+                let event: DownloadEvent = event.into();
+                println!("Event {:?} for gid {:x}", event, gid);
                 0
             },
         );

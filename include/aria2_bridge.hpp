@@ -28,9 +28,12 @@ namespace aria2 {
         int run(SessionHandle session, aria2::RUN_MODE runMode);
 
         // A2Gid utils
+
         rust::String gid_to_hex(A2Gid gid);
         A2Gid hex_to_gid(rust::Str hex);
         bool is_gid_null(A2Gid gid);
+
+        // Adds
 
         int add_uri(SessionHandle session, A2Gid& gid, const rust::Vec<rust::String>& uris,
                     const RKeyVals& options, int position);
@@ -44,9 +47,24 @@ namespace aria2 {
         int add_torrent_with_webseed_uris(SessionHandle session, A2Gid& gid, const rust::Str torrentFile,
                                           const rust::Vec<rust::String>& webSeedUris, const RKeyVals& options, int position);
 
+        // Download control
+
+        rust::Vec<A2Gid> get_active_download(SessionHandle session);
+        int remove_download(SessionHandle session, A2Gid gid, bool force);
+        int pause_download(SessionHandle session, A2Gid gid, bool force);
+        int unpause_download(SessionHandle session, A2Gid gid);
+
+        // Options
+
+        int change_option(SessionHandle session, A2Gid gid, const RKeyVals& options);
+        rust::Str get_global_option(SessionHandle session, const rust::Str name);
+        RKeyVals get_global_options(SessionHandle session);
+        int change_global_option(SessionHandle session, const RKeyVals& options);
+
         // Internals
 
         int __event_callback_delegate(Session* session, DownloadEvent event, A2Gid gid, void* userData);
         void __convert_key_vals(const RKeyVals& src, aria2::KeyVals& dst);
+        void __convert_key_vals_back(const aria2::KeyVals& src, RKeyVals& dst);
     }
 }

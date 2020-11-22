@@ -69,10 +69,6 @@ pub mod ffi {
         include!("libaria2/include/aria2_bridge.hpp");
 
         #[namespace = "aria2"]
-        type Session;
-        #[namespace = "aria2"]
-        type A2Gid;
-        #[namespace = "aria2"]
         type DownloadEvent;
         #[namespace = "aria2"]
         type RUN_MODE;
@@ -132,6 +128,22 @@ pub mod ffi {
             options: &Vec<KeyVal>,
             position: i32,
         ) -> i32;
+
+        pub unsafe fn get_active_download(session: SessionHandle) -> Vec<u64>;
+
+        pub unsafe fn remove_download(session: SessionHandle, gid: u64, force: bool) -> i32;
+
+        pub unsafe fn pause_download(session: SessionHandle, gid: u64, force: bool) -> i32;
+
+        pub unsafe fn unpause_download(session: SessionHandle, gid: u64) -> i32;
+
+        pub unsafe fn change_option(session: SessionHandle, gid: u64, options: &Vec<KeyVal>) -> i32;
+
+        pub unsafe fn get_global_option(session: SessionHandle, name: &str) -> &str;
+
+        pub unsafe fn get_global_options(session: SessionHandle) -> Vec<KeyVal>;
+
+        pub unsafe fn change_global_option(session: SessionHandle, options: &Vec<KeyVal>) -> i32;
     }
 }
 
