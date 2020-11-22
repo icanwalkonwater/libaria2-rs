@@ -65,15 +65,6 @@ pub mod ffi {
         RUN_ONCE,
     }
 
-    extern "Rust" {
-        fn download_event_callback(
-            session: SessionHandle,
-            event: DownloadEvent,
-            gid: u64,
-            user_data: usize,
-        ) -> i32;
-    }
-
     unsafe extern "C++" {
         include!("libaria2/include/aria2_bridge.hpp");
 
@@ -148,14 +139,4 @@ impl SessionHandle {
     pub fn is_valid(&self) -> bool {
         self.ptr != 0
     }
-}
-
-fn download_event_callback(
-    _session: ffi::SessionHandle,
-    _event: ffi::DownloadEvent,
-    _gid: A2Gid,
-    _user_data: usize,
-) -> i32 {
-    println!("Event callback");
-    0
 }
