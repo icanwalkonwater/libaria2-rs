@@ -22,14 +22,12 @@ namespace aria2 {
         }
 
         SessionHandle session_new(
-                const rust::Vec<KeyVal>& rustOptions,
+                const RKeyVals& rustOptions,
                 const SessionConfigFfi& rustConfig,
                 const rust::Fn<int(SessionHandle s, DownloadEvent e, A2Gid g, size_t user)> eventCallback
         ) {
-            KeyVals options;
-            for (auto opt : rustOptions) {
-                options.push_back({std::string(opt.key), std::string(opt.val)});
-            }
+            aria2::KeyVals options;
+            __convert_key_vals(rustOptions, options);
 
             SessionConfig config;
             config.keepRunning = rustConfig.keep_running;
@@ -46,17 +44,6 @@ namespace aria2 {
             return aria2::sessionFinal((Session*) session.ptr);
         }
 
-        // Internal
-        int __event_callback_delegate(Session* session, DownloadEvent event, A2Gid gid, void* userData) {
-            std::cout << "Callback" << std::endl;
-            return EVENT_RUST_CALLBACK(
-                    { .ptr = (size_t) session },
-                    event,
-                    gid,
-                    (size_t) userData
-            );
-        }
-
         int run(SessionHandle session, aria2::RUN_MODE runMode) {
             return aria2::run((Session*) session.ptr, runMode);
         }
@@ -71,6 +58,74 @@ namespace aria2 {
 
         bool is_gid_null(A2Gid gid) {
             return aria2::isNull(gid);
+        }
+
+        int add_uri(SessionHandle session, A2Gid& gid, const rust::Vec<rust::String>& rustUris,
+                    const RKeyVals& rustOptions, int position) {
+            std::vector<std::string> uris;
+            uris.resize(rustUris.size());
+            for (auto uri : rustUris) {
+                uris.emplace_back(uri);
+            }
+
+            aria2::KeyVals options;
+            __convert_key_vals(rustOptions, options);
+
+            return aria2::addUri((Session*) session.ptr, &gid, uris, options, position);
+        }
+
+        int add_metalink(SessionHandle session, rust::Vec<A2Gid>& gids, const rust::Str metalinkFile,
+                         const RKeyVals& rustOptions, int position) {
+            aria2::KeyVals options;
+            __convert_key_vals(rustOptions, options);
+
+            std::vector<A2Gid> resGuids;
+            int res = aria2::addMetalink((Session*) session.ptr, &resGuids, std::string(metalinkFile), options, position);
+            for (auto guid : resGuids) {
+                gids.push_back(guid);
+            }
+
+            return res;
+        }
+
+        int add_torrent(SessionHandle session, A2Gid& gid, const rust::Str torrentFile,
+                        const RKeyVals& rustOptions, int position) {
+            aria2::KeyVals options;
+            __convert_key_vals(rustOptions, options);
+
+            return aria2::addTorrent((Session*) session.ptr, &gid, std::string(torrentFile), options, position);
+        }
+
+        int add_torrent_with_webseed_uris(SessionHandle session, A2Gid& gid, const rust::Str torrentFile,
+                                          const rust::Vec<rust::String>& rustWebSeedUris, const RKeyVals& rustOptions, int position) {
+            aria2::KeyVals options;
+            __convert_key_vals(rustOptions, options);
+
+            std::vector<std::string> webSeedUris;
+            webSeedUris.reserve(rustWebSeedUris.size());
+            for (auto uri : rustWebSeedUris) {
+                webSeedUris.emplace_back(uri);
+            }
+
+            return aria2::addTorrent((Session*) session.ptr, &gid, std::string(torrentFile), webSeedUris, options, position);
+        }
+
+        // Internals
+
+        int __event_callback_delegate(Session* session, DownloadEvent event, A2Gid gid, void* userData) {
+            return EVENT_RUST_CALLBACK(
+                    { .ptr = (size_t) session },
+                    event,
+                    gid,
+                    (size_t) userData
+            );
+        }
+
+        void __convert_key_vals(const RKeyVals& src, aria2::KeyVals& dst) {
+            dst.reserve(src.size());
+            for (auto item : src) {
+                dst.push_back({ std::string(item.key), std::string(item.val) });
+            }
         }
     }
 }
