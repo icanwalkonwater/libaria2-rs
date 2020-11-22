@@ -150,14 +150,6 @@ impl SessionHandle {
     }
 }
 
-pub unsafe fn make_null_ref<T>() -> &'static T {
-    std::mem::transmute(std::ptr::null::<T>())
-}
-
-pub unsafe fn make_null_mut<T>() -> &'static mut T {
-    std::mem::transmute(std::ptr::null_mut::<T>())
-}
-
 fn download_event_callback(
     _session: ffi::SessionHandle,
     _event: ffi::DownloadEvent,
