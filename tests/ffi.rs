@@ -81,6 +81,7 @@ fn session_create() {
 
         assert!(session.is_valid());
 
+        shutdown(session, true);
         session_final(session);
         library_deinit();
     });
@@ -117,6 +118,7 @@ fn download_http() {
         let active = get_active_download(session);
         assert!(active.is_empty());
 
+        shutdown(session, true);
         session_final(session);
         library_deinit();
     });
@@ -168,6 +170,83 @@ fn get_change_options() {
             "2"
         );
 
+        shutdown(session, true);
+        session_final(session);
+        library_deinit();
+    })
+}
+
+#[test]
+fn stats() {
+    test_harness(|| unsafe {
+        library_init();
+        let session = get_session();
+
+        let mut gid = 0;
+        let res = add_uri(
+            session,
+            &mut gid,
+            &vec!["https://via.placeholder.com/150".into()],
+            &vec![],
+            -1,
+        );
+        assert_eq!(res, 0);
+        assert_ne!(gid, 0);
+
+        assert_eq!(tick(session), 1);
+
+        let stat = get_global_stat(session);
+        if stat.num_active == 1 {
+            assert_eq!(stat.num_waiting, 0);
+        } else if stat.num_waiting == 1 {
+            assert_eq!(stat.num_active, 0);
+        } else {
+            assert!(false);
+        }
+        assert_eq!(stat.num_stopped, 0);
+
+        remove_download(session, gid, true);
+
+        assert_eq!(tick(session), 1);
+
+        let stat = get_global_stat(session);
+        assert_eq!(stat.num_active, 0);
+        assert_eq!(stat.num_waiting, 0);
+        assert_eq!(stat.num_stopped, 1);
+
+        shutdown(session, true);
+        session_final(session);
+        library_deinit();
+    })
+}
+
+#[test]
+fn download_handle() {
+    test_harness(|| unsafe {
+        library_init();
+        let session = get_session();
+
+        let mut gid = 0;
+        let res = add_uri(
+            session,
+            &mut gid,
+            &vec!["https://via.placeholder.com/150".into()],
+            &vec![],
+            -1,
+        );
+        assert_eq!(res, 0);
+        assert_ne!(gid, 0);
+
+        assert_eq!(tick(session), 1);
+
+        let mut handle = get_download_handle(session, gid);
+        assert_eq!(handle.as_mut().unwrap().num_files(), 1);
+        println!("yikes");
+        let file = get_file(handle.as_mut().unwrap(), 0);
+
+        delete_download_handle(handle);
+
+        shutdown(session, true);
         session_final(session);
         library_deinit();
     })

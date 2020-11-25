@@ -25,7 +25,9 @@ namespace aria2 {
         int session_final(SessionHandle session);
 
         // Run command
+
         int run(SessionHandle session, aria2::RUN_MODE runMode);
+        int shutdown(SessionHandle session, bool force);
 
         // A2Gid utils
 
@@ -53,6 +55,7 @@ namespace aria2 {
         int remove_download(SessionHandle session, A2Gid gid, bool force);
         int pause_download(SessionHandle session, A2Gid gid, bool force);
         int unpause_download(SessionHandle session, A2Gid gid);
+        int change_position(SessionHandle session, A2Gid gid, int pos, aria2::OffsetMode how);
 
         // Options
 
@@ -60,6 +63,21 @@ namespace aria2 {
         rust::Str get_global_option(SessionHandle session, const rust::Str name);
         RKeyVals get_global_options(SessionHandle session);
         int change_global_option(SessionHandle session, const RKeyVals& options);
+
+        // Stats
+
+        GlobalStat get_global_stat(SessionHandle session);
+
+        // Download Handle
+
+        rust::String DownloadHandle_getBitfieldExt(aria2::DownloadHandle& handle);
+        std::unique_ptr<std::vector<aria2::FileData>> DownloadHandle_getFiles(aria2::DownloadHandle& handle);
+        std::unique_ptr<aria2::FileData> DownloadHandle_getFile(aria2::DownloadHandle& handle, int index);
+        std::unique_ptr<aria2::BtMetaInfoData> DownloadHandle_getBtMetaInfo(aria2::DownloadHandle& handle);
+        RKeyVals DownloadHandle_getOptions(aria2::DownloadHandle& handle);
+
+        std::unique_ptr<aria2::DownloadHandle> get_download_handle(SessionHandle session, A2Gid gid);
+        void delete_download_handle(std::unique_ptr<aria2::DownloadHandle> handle);
 
         // Internals
 

@@ -59,6 +59,10 @@ namespace aria2 {
             return aria2::run((Session*) session.ptr, runMode);
         }
 
+        int shutdown(SessionHandle session, bool force) {
+            return aria2::shutdown((Session*) session.ptr, force);
+        }
+
         // Utils
         // <editor-fold>
 
@@ -152,6 +156,10 @@ namespace aria2 {
             return aria2::unpauseDownload((Session*) session.ptr, gid);
         }
 
+        int change_position(SessionHandle session, A2Gid gid, int pos, aria2::OffsetMode how) {
+            return aria2::changePosition((Session*) session.ptr, gid, pos, how);
+        }
+
         // </editor-fold>
 
         // Options
@@ -182,6 +190,64 @@ namespace aria2 {
 
             return aria2::changeGlobalOption((Session*) session.ptr, options);
         }
+        // </editor-fold>
+
+        // Stats
+
+        GlobalStat get_global_stat(SessionHandle session) {
+            aria2::GlobalStat stat = aria2::getGlobalStat((Session*) session.ptr);
+            return {
+                .download_speed = stat.downloadSpeed,
+                .upload_speed = stat.uploadSpeed,
+                .num_active = stat.numActive,
+                .num_waiting = stat.numWaiting,
+                .num_stopped = stat.numStopped
+            };
+        }
+
+        // Download Handle
+        // <editor-fold>
+
+        rust::String DownloadHandle_getBitfieldExt(aria2::DownloadHandle& handle) {
+            return rust::String(handle.getBitfield());
+        }
+
+        std::unique_ptr<std::vector<aria2::FileData>> DownloadHandle_getFiles(aria2::DownloadHandle& handle) {
+            std::vector<aria2::FileData> original(handle.getFiles());
+            /*rust::Vec<aria2::FileData> out;
+            std::copy(original.begin(), original.end(), std::back_inserter(original));
+            return out;*/
+            return std::make_unique<std::vector<aria2::FileData>>(original);
+        }
+
+        std::unique_ptr<aria2::FileData> DownloadHandle_getFile(aria2::DownloadHandle& handle, int index) {
+            std::cout << "hey" << std::endl;
+            aria2::FileData data = handle.getFile(index);
+            std::cout << "ho" << std::endl;
+            return std::make_unique<aria2::FileData>(data);
+        }
+
+        std::unique_ptr<aria2::BtMetaInfoData> DownloadHandle_getBtMetaInfo(aria2::DownloadHandle& handle) {
+            aria2::BtMetaInfoData data(handle.getBtMetaInfo());
+            return std::make_unique<aria2::BtMetaInfoData>(data);
+        }
+
+        RKeyVals DownloadHandle_getOptions(aria2::DownloadHandle& handle) {
+            aria2::KeyVals original(handle.getOptions());
+            RKeyVals out;
+            __convert_key_vals_back(original, out);
+            return out;
+        }
+
+        std::unique_ptr<aria2::DownloadHandle> get_download_handle(SessionHandle session, A2Gid gid) {
+            aria2::DownloadHandle* handle = aria2::getDownloadHandle((Session*) session.ptr, gid);
+            return std::unique_ptr<aria2::DownloadHandle>(handle);
+        }
+
+        void delete_download_handle(std::unique_ptr<aria2::DownloadHandle> handle) {
+            aria2::deleteDownloadHandle(handle.get());
+        }
+
         // </editor-fold>
 
         // Internals
