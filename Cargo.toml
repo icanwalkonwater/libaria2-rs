@@ -4,6 +4,9 @@ version = "0.1.0"
 authors = ["Lucas Malandrino <lucas.malandrino@gmail.com>"]
 edition = "2018"
 
+[lib]
+crate-type = ["rlib", "dylib"]
+
 [dependencies]
 cxx = "^1.0.1"
 

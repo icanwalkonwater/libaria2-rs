@@ -18,4 +18,5 @@ fn main() {
     println!("cargo:rerun-if-changed=src/lib.rs");
     println!("cargo:rerun-if-changed=src/aria2_bridge.cpp");
     println!("cargo:rerun-if-changed=include/aria2_bridge.hpp");
+    println!("cargo:rerun-if-changed=include/DownloadHandleWrapper.hpp");
 }

@@ -132,6 +132,7 @@ pub mod ffi {
 
     unsafe extern "C++" {
         include!("libaria2/include/aria2_bridge.hpp");
+        include!("libaria2/include/DownloadHandleWrapper.hpp");
 
         #[namespace = "aria2"]
         type DownloadEvent;
@@ -152,9 +153,14 @@ pub mod ffi {
         #[namespace = "aria2"]
         type BtMetaInfoData;
 
+        #[namespace = "aria2"]
+        #[cxx_name = "libraryInit"]
         pub unsafe fn library_init() -> i32;
+        #[namespace = "aria2"]
+        #[cxx_name = "libraryDeinit"]
         pub unsafe fn library_deinit() -> i32;
 
+        #[cxx_name = "sessionNew"]
         pub unsafe fn session_new(
             options: &Vec<KeyVal>,
             config: &SessionConfigFfi,
@@ -162,15 +168,22 @@ pub mod ffi {
             cb: fn(SessionHandle, DownloadEvent, u64, usize) -> i32,
         ) -> SessionHandle;
 
+        #[cxx_name = "sessionFinal"]
         pub unsafe fn session_final(session: SessionHandle) -> i32;
 
+        #[cxx_name = "run"]
         pub unsafe fn run(session: SessionHandle, run_mode: RUN_MODE) -> i32;
+        #[cxx_name = "shutdown"]
         pub unsafe fn shutdown(session: SessionHandle, force: bool) -> i32;
 
+        #[cxx_name = "gidToHex"]
         pub fn gid_to_hex(gid: u64) -> String;
+        #[cxx_name = "hexToGid"]
         pub fn hex_to_gid(hex: &str) -> u64;
+        #[cxx_name = "isGidNull"]
         pub fn is_gid_null(gid: u64) -> bool;
 
+        #[cxx_name = "addUri"]
         pub unsafe fn add_uri(
             session: SessionHandle,
             gid: &mut u64,
@@ -179,6 +192,7 @@ pub mod ffi {
             position: i32
         ) -> i32;
 
+        #[cxx_name = "addMetalink"]
         pub unsafe fn add_metalink(
             session: SessionHandle,
             gids: &mut Vec<u64>,
@@ -187,6 +201,7 @@ pub mod ffi {
             position: i32
         ) -> i32;
 
+        #[cxx_name = "addTorrent"]
         pub unsafe fn add_torrent(
             session: SessionHandle,
             gid: &mut u64,
@@ -195,6 +210,7 @@ pub mod ffi {
             position: i32,
         ) -> i32;
 
+        #[cxx_name = "addTorrentWithWebseedUris"]
         pub unsafe fn add_torrent_with_webseed_uris(
             session: SessionHandle,
             gid: &mut u64,
@@ -204,68 +220,79 @@ pub mod ffi {
             position: i32,
         ) -> i32;
 
+        #[cxx_name = "getActiveDownload"]
         pub unsafe fn get_active_download(session: SessionHandle) -> Vec<u64>;
+        #[cxx_name = "removeDownload"]
         pub unsafe fn remove_download(session: SessionHandle, gid: u64, force: bool) -> i32;
+        #[cxx_name = "pauseDownload"]
         pub unsafe fn pause_download(session: SessionHandle, gid: u64, force: bool) -> i32;
+        #[cxx_name = "unpauseDownload"]
         pub unsafe fn unpause_download(session: SessionHandle, gid: u64) -> i32;
+        #[cxx_name = "changePosition"]
         pub unsafe fn change_position(session: SessionHandle, gid: u64, pos: i32, how: OffsetMode) -> i32;
 
+        #[cxx_name = "changeOption"]
         pub unsafe fn change_option(session: SessionHandle, gid: u64, options: &Vec<KeyVal>) -> i32;
+        #[cxx_name = "getGlobalOption"]
         pub unsafe fn get_global_option(session: SessionHandle, name: &str) -> &str;
+        #[cxx_name = "getGlobalOptions"]
         pub unsafe fn get_global_options(session: SessionHandle) -> Vec<KeyVal>;
+        #[cxx_name = "changeGlobalOption"]
         pub unsafe fn change_global_option(session: SessionHandle, options: &Vec<KeyVal>) -> i32;
 
+        #[cxx_name = "getGlobalStat"]
         pub unsafe fn get_global_stat(session: SessionHandle) -> GlobalStat;
 
-        #[namespace = "aria2"]
-        type DownloadHandle;
+        type DownloadHandleWrapper;
         #[cxx_name = "getStatus"]
-        pub unsafe fn status(self: Pin<&mut DownloadHandle>) -> DownloadStatus;
+        pub unsafe fn status(self: &DownloadHandleWrapper) -> DownloadStatus;
         #[cxx_name = "getTotalLength"]
-        pub unsafe fn total_length(self: Pin<&mut DownloadHandle>) -> i64;
+        pub unsafe fn total_length(self: &DownloadHandleWrapper) -> usize;
         #[cxx_name = "getCompletedLength"]
-        pub unsafe fn completed_length(self: Pin<&mut DownloadHandle>) -> i64;
+        pub unsafe fn completed_length(self: &DownloadHandleWrapper) -> usize;
         #[cxx_name = "getUploadLength"]
-        pub unsafe fn upload_length(self: Pin<&mut DownloadHandle>) -> i64;
-        #[cxx_name = "DownloadHandle_getBitfieldExt"]
-        pub unsafe fn bitfield(handle: Pin<&mut DownloadHandle>) -> String;
+        pub unsafe fn upload_length(self: &DownloadHandleWrapper) -> usize;
+        #[cxx_name = "getBitfield"]
+        pub unsafe fn bitfield(self: &DownloadHandleWrapper) -> String;
         #[cxx_name = "getDownloadSpeed"]
-        pub unsafe fn download_speed(self: Pin<&mut DownloadHandle>) -> i32;
+        pub unsafe fn download_speed(self: &DownloadHandleWrapper) -> u32;
         #[cxx_name = "getUploadSpeed"]
-        pub unsafe fn upload_speed(self: Pin<&mut DownloadHandle>) -> i32;
+        pub unsafe fn upload_speed(self: &DownloadHandleWrapper) -> u32;
         #[cxx_name = "getInfoHash"]
-        pub unsafe fn info_hash(self: Pin<&mut DownloadHandle>) -> &CxxString;
+        pub unsafe fn info_hash(self: &DownloadHandleWrapper) -> &CxxString;
         #[cxx_name = "getPieceLength"]
-        pub unsafe fn piece_length(self: Pin<&mut DownloadHandle>) -> usize;
+        pub unsafe fn piece_length(self: &DownloadHandleWrapper) -> usize;
         #[cxx_name = "getNumPieces"]
-        pub unsafe fn num_pieces(self: Pin<&mut DownloadHandle>) -> i32;
+        pub unsafe fn num_pieces(self: &DownloadHandleWrapper) -> u32;
         #[cxx_name = "getConnections"]
-        pub unsafe fn connections(self: Pin<&mut DownloadHandle>) -> i32;
+        pub unsafe fn connections(self: &DownloadHandleWrapper) -> u32;
         #[cxx_name = "getErrorCode"]
-        pub unsafe fn error_code(self: Pin<&mut DownloadHandle>) -> i32;
+        pub unsafe fn error_code(self: &DownloadHandleWrapper) -> i32;
         #[cxx_name = "getFollowedBy"]
-        pub unsafe fn followed_by(self: Pin<&mut DownloadHandle>) -> &CxxVector<u64>;
+        pub unsafe fn followed_by(self: &DownloadHandleWrapper) -> &CxxVector<u64>;
         #[cxx_name = "getFollowing"]
-        pub unsafe fn following(self: Pin<&mut DownloadHandle>) -> u64;
+        pub unsafe fn following(self: &DownloadHandleWrapper) -> u64;
         #[cxx_name = "getBelongsTo"]
-        pub unsafe fn belongs_to(self: Pin<&mut DownloadHandle>) -> u64;
+        pub unsafe fn belongs_to(self: &DownloadHandleWrapper) -> u64;
         #[cxx_name = "getDir"]
-        pub unsafe fn directory(self: Pin<&mut DownloadHandle>) -> &CxxString;
-        #[cxx_name = "DownloadHandle_getFiles"]
-        pub unsafe fn files(handle: Pin<&mut DownloadHandle>) -> UniquePtr<CxxVector<FileData>>;
+        pub unsafe fn directory(self: &DownloadHandleWrapper) -> &CxxString;
+        #[cxx_name = "getFiles"]
+        pub unsafe fn files(self: &DownloadHandleWrapper) -> UniquePtr<CxxVector<FileData>>;
         #[cxx_name = "getNumFiles"]
-        pub unsafe fn num_files(self: Pin<&mut DownloadHandle>) -> i32;
-        #[cxx_name = "DownloadHandle_getFile"]
-        pub unsafe fn get_file(handle: Pin<&mut DownloadHandle>, index: i32) -> UniquePtr<FileData>;
-        #[cxx_name = "DownloadHandle_getBtMetaInfo"]
-        pub unsafe fn bt_meta_info(handle: Pin<&mut DownloadHandle>) -> UniquePtr<BtMetaInfoData>;
+        pub unsafe fn num_files(self: &DownloadHandleWrapper) -> u32;
+        #[cxx_name = "getFile"]
+        pub unsafe fn get_file(self: &DownloadHandleWrapper, index: u32) -> UniquePtr<FileData>;
+        #[cxx_name = "getBtMetaInfo"]
+        pub unsafe fn bt_meta_info(self: &DownloadHandleWrapper) -> UniquePtr<BtMetaInfoData>;
         #[cxx_name = "getOption"]
-        pub unsafe fn get_option<'a>(self: Pin<&'a mut DownloadHandle>, name: &CxxString) -> &'a CxxString;
-        #[cxx_name = "DownloadHandle_getOptions"]
-        pub unsafe fn options(handle: Pin<&mut DownloadHandle>) -> Vec<KeyVal>;
+        pub unsafe fn get_option<'a>(self: &'a DownloadHandleWrapper, name: &str) -> &'a CxxString;
+        #[cxx_name = "getOptions"]
+        pub unsafe fn options(self: &DownloadHandleWrapper) -> Vec<KeyVal>;
 
-        pub unsafe fn get_download_handle(session: SessionHandle, gid: u64) -> UniquePtr<DownloadHandle>;
-        pub unsafe fn delete_download_handle(handle: UniquePtr<DownloadHandle>);
+        #[cxx_name = "getDownloadHandle"]
+        pub unsafe fn get_download_handle(session: SessionHandle, gid: u64) -> UniquePtr<DownloadHandleWrapper>;
+        #[cxx_name = "deleteDownloadHandle"]
+        pub unsafe fn delete_download_handle(handle: UniquePtr<DownloadHandleWrapper>);
     }
 }
 

@@ -239,10 +239,9 @@ fn download_handle() {
 
         assert_eq!(tick(session), 1);
 
-        let mut handle = get_download_handle(session, gid);
-        assert_eq!(handle.as_mut().unwrap().num_files(), 1);
-        println!("yikes");
-        let file = get_file(handle.as_mut().unwrap(), 0);
+        let handle = get_download_handle(session, gid);
+        assert_eq!(handle.num_files(), 1);
+        let file = handle.get_file(1);
 
         delete_download_handle(handle);
 
