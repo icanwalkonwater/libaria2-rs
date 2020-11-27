@@ -1,11 +1,9 @@
 //! Those tests come from the original test of aria2's public API.
 //! https://github.com/aria2/aria2/blob/master/test/Aria2ApiTest.cc
 
-use nix::sys::wait::WaitStatus;
-use nix::unistd::ForkResult;
+use nix::{sys::wait::WaitStatus, unistd::ForkResult};
 
-use libaria2::ffi::*;
-use libaria2::*;
+use libaria2::{ffi::*, *};
 
 pub fn test_harness(test: unsafe fn()) {
     // Skip harness if env variable say so

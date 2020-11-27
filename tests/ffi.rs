@@ -1,7 +1,5 @@
-use libaria2::ffi::*;
-use libaria2::*;
-use nix::sys::wait::WaitStatus;
-use nix::unistd::ForkResult;
+use libaria2::{ffi::*, *};
+use nix::{sys::wait::WaitStatus, unistd::ForkResult};
 
 pub fn test_harness(test: unsafe fn()) {
     // Skip harness if env variable say so
@@ -61,7 +59,7 @@ pub unsafe fn get_session() -> SessionHandle {
             KeyVal {
                 key: "no-conf".into(),
                 val: "true".into(),
-            }
+            },
         ],
         &SessionConfigFfi {
             keep_running: false,

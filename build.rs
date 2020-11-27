@@ -2,7 +2,8 @@ fn main() {
     // Generate CXX bridge
     let mut bridge = cxx_build::bridge("src/lib.rs");
 
-    bridge.file("src/aria2_bridge.cpp")
+    bridge
+        .file("src/aria2_bridge.cpp")
         .flag_if_supported("-std=c++14");
 
     if cfg!(debug_assertions) {

@@ -1,5 +1,7 @@
-use libaria2::ffi::{KeyVal, SessionConfigFfi};
-use libaria2::{A2Gid, DownloadEvent, RunMode};
+use libaria2::{
+    ffi::{KeyVal, SessionConfigFfi},
+    A2Gid, DownloadEvent, RunMode,
+};
 
 fn main() {
     unsafe {

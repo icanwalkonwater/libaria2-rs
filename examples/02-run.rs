@@ -1,5 +1,4 @@
-use libaria2::ffi::{SessionConfigFfi};
-use libaria2::{RunMode, DownloadEvent};
+use libaria2::{ffi::SessionConfigFfi, DownloadEvent, RunMode};
 
 fn main() {
     unsafe {
