@@ -3,8 +3,8 @@
 #include <memory>
 #include <aria2/aria2.h>
 #include "rust/cxx.h"
-#include "libaria2/src/lib.rs.h"
-#include "libaria2/include/DownloadHandleWrapper.hpp"
+#include "aria2-sys/src/lib.rs.h"
+#include "aria2-sys/include/DownloadHandleWrapper.hpp"
 
 namespace aria2 {
     namespace bridge {

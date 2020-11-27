@@ -1,12 +1,12 @@
-use libaria2::ffi::SessionConfigFfi;
+use aria2_sys::ffi::SessionConfigFfi;
 
 fn main() {
     unsafe {
         println!("Library init");
-        libaria2::ffi::library_init();
+        aria2_sys::ffi::library_init();
 
         println!("Create session");
-        let session = libaria2::ffi::session_new(
+        let session = aria2_sys::ffi::session_new(
             &vec![],
             &SessionConfigFfi {
                 keep_running: false,
@@ -19,9 +19,9 @@ fn main() {
         // Do something maybe ?
 
         println!("Destroy session");
-        libaria2::ffi::session_final(session);
+        aria2_sys::ffi::session_final(session);
 
         println!("Library deinit");
-        libaria2::ffi::library_deinit();
+        aria2_sys::ffi::library_deinit();
     }
 }

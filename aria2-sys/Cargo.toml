@@ -1,0 +1,16 @@
+[package]
+name = "aria2-sys"
+version = "0.1.0"
+authors = ["Lucas Malandrino <lucas.malandrino@gmail.com>"]
+edition = "2018"
+links = "aria2"
+
+[dependencies]
+cxx = "^1.0.1"
+
+[build-dependencies]
+cxx-build = "^1.0.1"
+pkg-config = "^0.3.19"
+
+[dev-dependencies]
+nix = "0.19.0"

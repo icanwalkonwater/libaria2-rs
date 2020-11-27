@@ -1,5 +1,3 @@
 /.idea
 /target
 Cargo.lock
-/_clion_include
-/cmake-*

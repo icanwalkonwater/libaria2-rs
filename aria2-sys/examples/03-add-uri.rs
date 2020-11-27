@@ -1,13 +1,13 @@
-use libaria2::{
+use aria2_sys::{
     ffi::{KeyVal, SessionConfigFfi},
     A2Gid, DownloadEvent, RunMode,
 };
 
 fn main() {
     unsafe {
-        libaria2::ffi::library_init();
+        aria2_sys::ffi::library_init();
 
-        let session = libaria2::ffi::session_new(
+        let session = aria2_sys::ffi::session_new(
             &vec![KeyVal {
                 key: "dir".into(),
                 val: "/tmp".into(),
@@ -27,12 +27,12 @@ fn main() {
 
         if !session.is_valid() {
             eprintln!("Failed to create session, abort");
-            libaria2::ffi::library_deinit();
+            aria2_sys::ffi::library_deinit();
             return;
         }
 
         let mut gid = A2Gid::default();
-        let res = libaria2::ffi::add_uri(
+        let res = aria2_sys::ffi::add_uri(
             session,
             &mut gid,
             &vec!["https://via.placeholder.com/150".into()],
@@ -47,7 +47,7 @@ fn main() {
         }
 
         loop {
-            match libaria2::ffi::run(session, RunMode::RUN_ONCE) {
+            match aria2_sys::ffi::run(session, RunMode::RUN_ONCE) {
                 0 => break,
                 1 => {
                     println!("Running...");
@@ -60,7 +60,7 @@ fn main() {
             }
         }
 
-        libaria2::ffi::session_final(session);
-        libaria2::ffi::library_deinit();
+        aria2_sys::ffi::session_final(session);
+        aria2_sys::ffi::library_deinit();
     }
 }

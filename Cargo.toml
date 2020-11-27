@@ -1,17 +1,5 @@
-[package]
-name = "libaria2"
-version = "0.1.0"
-authors = ["Lucas Malandrino <lucas.malandrino@gmail.com>"]
-edition = "2018"
-
-[lib]
-crate-type = ["rlib", "dylib"]
-
-[dependencies]
-cxx = "^1.0.1"
-
-[build-dependencies]
-cxx-build = "^1.0.1"
-
-[dev-dependencies]
-nix = "0.19.0"
+[workspace]
+members = [
+    "aria2-sys",
+    "aria2",
+]

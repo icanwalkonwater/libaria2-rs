@@ -1,0 +1,10 @@
+[package]
+name = "aria2"
+version = "0.0.1"
+authors = ["Lucas Malandrino <lucas.malandrino@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+aria2-sys = { path = "../aria2-sys" }
+thiserror = "1.0.22"
+log = "0.4.11"

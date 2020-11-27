@@ -1,4 +1,4 @@
-use libaria2::{ffi::*, *};
+use aria2_sys::{ffi::*, *};
 use nix::{sys::wait::WaitStatus, unistd::ForkResult};
 
 pub fn test_harness(test: unsafe fn()) {
@@ -249,6 +249,26 @@ fn download_handle() {
 
         shutdown(session, true);
         session_final(session);
+        library_deinit();
+    })
+}
+
+#[test]
+fn multiple_session() {
+    test_harness(|| unsafe {
+        library_init();
+
+        let session = get_session();
+        assert_eq!(tick(session), 1);
+        assert_eq!(session_final(session), 0);
+
+        let session = get_session();
+        let mut gid = A2Gid::default();
+        assert_eq!(add_uri(session, &mut gid, &vec!["http://localhost/1".into()], &vec![], -1), 0);
+        assert!(!is_gid_null(gid));
+        assert_eq!(remove_download(session, gid, false), 0);
+        assert_eq!(session_final(session), 0);
+
         library_deinit();
     })
 }

@@ -132,8 +132,8 @@ pub mod ffi {
     }
 
     unsafe extern "C++" {
-        include!("libaria2/include/aria2_bridge.hpp");
-        include!("libaria2/include/DownloadHandleWrapper.hpp");
+        include!("aria2-sys/include/aria2_bridge.hpp");
+        include!("aria2-sys/include/DownloadHandleWrapper.hpp");
 
         #[namespace = "aria2"]
         type DownloadEvent;
@@ -165,7 +165,6 @@ pub mod ffi {
         pub unsafe fn session_new(
             options: &Vec<KeyVal>,
             config: &SessionConfigFfi,
-            // cb: fn(SessionHandle, DownloadEvent, A2Gid, *const c_void) -> i32,
             cb: fn(SessionHandle, DownloadEvent, u64, usize) -> i32,
         ) -> SessionHandle;
 

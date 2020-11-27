@@ -5,8 +5,8 @@
 #include <assert.h>
 #include <aria2/aria2.h>
 #include "rust/cxx.h"
-#include "libaria2/src/lib.rs.h"
-#include "libaria2/include/aria2_bridge.hpp"
+#include "aria2-sys/src/lib.rs.h"
+#include "aria2-sys/include/aria2_bridge.hpp"
 
 namespace aria2 {
     namespace bridge {

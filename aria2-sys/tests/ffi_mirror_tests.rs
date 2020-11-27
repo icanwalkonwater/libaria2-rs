@@ -3,7 +3,7 @@
 
 use nix::{sys::wait::WaitStatus, unistd::ForkResult};
 
-use libaria2::{ffi::*, *};
+use aria2_sys::{ffi::*, *};
 
 pub fn test_harness(test: unsafe fn()) {
     // Skip harness if env variable say so
