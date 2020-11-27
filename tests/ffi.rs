@@ -3,7 +3,7 @@ use libaria2::*;
 use nix::sys::wait::WaitStatus;
 use nix::unistd::ForkResult;
 
-fn test_harness(test: unsafe fn()) {
+pub fn test_harness(test: unsafe fn()) {
     // Skip harness if env variable say so
     if let Some(opt) = option_env!("NO_HARNESS") {
         if opt != "0" && opt.to_lowercase() != "false" {
@@ -47,7 +47,7 @@ fn test_harness(test: unsafe fn()) {
     }
 }
 
-unsafe fn get_session() -> SessionHandle {
+pub unsafe fn get_session() -> SessionHandle {
     session_new(
         &vec![
             KeyVal {
@@ -58,6 +58,10 @@ unsafe fn get_session() -> SessionHandle {
                 key: "max-overall-download-limit".into(),
                 val: "1".into(),
             },
+            KeyVal {
+                key: "no-conf".into(),
+                val: "true".into(),
+            }
         ],
         &SessionConfigFfi {
             keep_running: false,
@@ -68,7 +72,7 @@ unsafe fn get_session() -> SessionHandle {
     )
 }
 
-unsafe fn tick(session: SessionHandle) -> i32 {
+pub unsafe fn tick(session: SessionHandle) -> i32 {
     run(session, RunMode::RUN_ONCE)
 }
 

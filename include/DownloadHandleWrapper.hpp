@@ -12,9 +12,63 @@ namespace aria2 {
     namespace bridge {
         struct KeyVal;
 
+        struct UriDataWrapper {
+        public:
+            explicit inline UriDataWrapper(aria2::UriData data) : uriData(std::move(data)) {
+            }
+
+            inline const std::string& getUri() const {
+                return uriData.uri;
+            }
+
+            inline aria2::UriStatus getStatus() const {
+                return uriData.status;
+            }
+
+        private:
+            aria2::UriData uriData;
+        };
+
+        struct FileDataWrapper {
+        public:
+            inline explicit FileDataWrapper(aria2::FileData data) : fileData(std::move(data)) {
+                for (const auto& uri : fileData.uris) {
+                    uris.emplace_back(uri);
+                }
+            }
+
+            inline unsigned int getIndex() const {
+                return static_cast<unsigned int>(fileData.index);
+            }
+
+            inline const std::string& getPath() const {
+                return fileData.path;
+            }
+
+            inline uint64_t getLength() const {
+                return static_cast<uint64_t>(fileData.length);
+            }
+
+            inline uint64_t getCompletedLength() const {
+                return static_cast<uint64_t>(fileData.completedLength);
+            }
+
+            inline bool isSelected() const {
+                return fileData.selected;
+            }
+
+            inline const std::vector<UriDataWrapper>& getUris() const {
+                return uris;
+            }
+
+        private:
+            aria2::FileData fileData;
+            std::vector<UriDataWrapper> uris;
+        };
+
         struct DownloadHandleWrapper {
         public:
-            inline DownloadHandleWrapper(aria2::DownloadHandle *handle) : handle(handle) {
+            inline explicit DownloadHandleWrapper(aria2::DownloadHandle* handle) : handle(handle) {
             }
 
             inline ~DownloadHandleWrapper() {
@@ -86,19 +140,23 @@ namespace aria2 {
                 return handle->getDir();
             }
 
-            inline std::unique_ptr<std::vector<aria2::FileData>> getFiles() const {
-                std::vector<aria2::FileData> files(handle->getFiles());
-                return std::make_unique<std::vector<aria2::FileData>>(files);
+            inline std::unique_ptr<std::vector<FileDataWrapper>> getFiles() const {
+                std::unique_ptr<std::vector<FileDataWrapper>> vec = std::make_unique<std::vector<FileDataWrapper>>();
+                vec->reserve(handle->getNumFiles());
+                for (const auto& file : handle->getFiles()) {
+                    vec->emplace_back(file);
+                }
+                return vec;
             }
 
             inline unsigned int getNumFiles() const {
                 return static_cast<unsigned int>(handle->getNumFiles());
             }
 
-            inline std::unique_ptr<aria2::FileData> getFile(unsigned int index) const {
+            inline std::unique_ptr<FileDataWrapper> getFile(unsigned int index) const {
                 assert(index >= 1);
                 aria2::FileData file = handle->getFile((int) index);
-                auto filePtr = std::make_unique<aria2::FileData>(file);
+                auto filePtr = std::make_unique<FileDataWrapper>(file);
                 return filePtr;
             }
 
@@ -114,7 +172,7 @@ namespace aria2 {
             rust::Vec<KeyVal> getOptions() const;
 
         private:
-            aria2::DownloadHandle *handle;
+            aria2::DownloadHandle* handle;
         };
     }
 }

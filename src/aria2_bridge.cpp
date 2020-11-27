@@ -208,7 +208,11 @@ namespace aria2 {
 
         std::unique_ptr<DownloadHandleWrapper> getDownloadHandle(SessionHandle session, A2Gid gid) {
             aria2::DownloadHandle* rawHandle = aria2::getDownloadHandle((Session*) session.ptr, gid);
-            return std::make_unique<DownloadHandleWrapper>(rawHandle);
+            if (rawHandle != nullptr) {
+                return std::make_unique<DownloadHandleWrapper>(rawHandle);
+            } else {
+                return std::unique_ptr<DownloadHandleWrapper>();
+            }
         }
 
         void deleteDownloadHandle(std::unique_ptr<DownloadHandleWrapper> handle) {

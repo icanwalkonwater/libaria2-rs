@@ -1,6 +1,7 @@
 #![allow(non_camel_case_types)]
 
 use crate::ffi::SessionHandle;
+use std::fmt::{Debug, Formatter};
 
 pub type A2Gid = u64;
 pub type RunMode = ffi::RUN_MODE;
@@ -98,11 +99,11 @@ pub mod ffi {
         pub uris: Vec<ffi::UriData>,
     }*/
 
-    #[derive(Clone)]
+    /*#[derive(Clone)]
     pub struct UriData {
         pub uri: String,
         pub status: UriStatus,
-    }
+    }*/
 
     #[repr(u32)]
     pub enum BtFileMode {
@@ -149,7 +150,7 @@ pub mod ffi {
         #[namespace = "aria2"]
         type DownloadStatus;
         #[namespace = "aria2"]
-        type FileData;
+        type UriData;
         #[namespace = "aria2"]
         type BtMetaInfoData;
 
@@ -243,6 +244,26 @@ pub mod ffi {
         #[cxx_name = "getGlobalStat"]
         pub unsafe fn get_global_stat(session: SessionHandle) -> GlobalStat;
 
+        type UriDataWrapper;
+        #[cxx_name = "getUri"]
+        pub unsafe fn uri(self: &UriDataWrapper) -> &CxxString;
+        #[cxx_name = "getStatus"]
+        pub unsafe fn status(self: &UriDataWrapper) -> UriStatus;
+
+        type FileDataWrapper;
+        #[cxx_name = "getIndex"]
+        pub unsafe fn index(self: &FileDataWrapper) -> u32;
+        #[cxx_name = "getPath"]
+        pub unsafe fn path(self: &FileDataWrapper) -> &CxxString;
+        #[cxx_name = "getLength"]
+        pub unsafe fn len(self: &FileDataWrapper) -> u64;
+        #[cxx_name = "getCompletedLength"]
+        pub unsafe fn completed_len(self: &FileDataWrapper) -> u64;
+        #[cxx_name = "isSelected"]
+        pub unsafe fn selected(self: &FileDataWrapper) -> bool;
+        #[cxx_name = "getUris"]
+        pub unsafe fn uris(self: &FileDataWrapper) -> &CxxVector<UriDataWrapper>;
+
         type DownloadHandleWrapper;
         #[cxx_name = "getStatus"]
         pub unsafe fn status(self: &DownloadHandleWrapper) -> DownloadStatus;
@@ -277,11 +298,11 @@ pub mod ffi {
         #[cxx_name = "getDir"]
         pub unsafe fn directory(self: &DownloadHandleWrapper) -> &CxxString;
         #[cxx_name = "getFiles"]
-        pub unsafe fn files(self: &DownloadHandleWrapper) -> UniquePtr<CxxVector<FileData>>;
+        pub unsafe fn files(self: &DownloadHandleWrapper) -> UniquePtr<CxxVector<FileDataWrapper>>;
         #[cxx_name = "getNumFiles"]
         pub unsafe fn num_files(self: &DownloadHandleWrapper) -> u32;
         #[cxx_name = "getFile"]
-        pub unsafe fn get_file(self: &DownloadHandleWrapper, index: u32) -> UniquePtr<FileData>;
+        pub unsafe fn get_file(self: &DownloadHandleWrapper, index: u32) -> UniquePtr<FileDataWrapper>;
         #[cxx_name = "getBtMetaInfo"]
         pub unsafe fn bt_meta_info(self: &DownloadHandleWrapper) -> UniquePtr<BtMetaInfoData>;
         #[cxx_name = "getOption"]
@@ -299,5 +320,19 @@ pub mod ffi {
 impl SessionHandle {
     pub fn is_valid(&self) -> bool {
         self.ptr != 0
+    }
+}
+
+impl Debug for ffi::DownloadStatus {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match *self {
+            Self::DOWNLOAD_ACTIVE => f.write_str("DOWNLOAD_ACTIVE"),
+            Self::DOWNLOAD_WAITING => f.write_str("DOWNLOAD_WAITING"),
+            Self::DOWNLOAD_PAUSED => f.write_str("DOWNLOAD_PAUSED"),
+            Self::DOWNLOAD_COMPLETE => f.write_str("DOWNLOAD_COMPLETE"),
+            Self::DOWNLOAD_ERROR => f.write_str("DOWNLOAD_ERROR"),
+            Self::DOWNLOAD_REMOVED => f.write_str("DOWNLOAD_REMOVED"),
+            _ => unreachable!(),
+        }
     }
 }
