@@ -4,7 +4,7 @@ fn main() {
     let mut aria = Aria2Context::new().unwrap();
     let mut session = aria.new_session(true, &[]);
 
-    let gid = session.add_uri("http://localhost/1").unwrap();
+    let gid = session.add_uri("https://via.placeholder.com/150").unwrap();
 
     let (res, ctx) = session.poll(true).unwrap();
     assert_eq!(res, RunResult::Continue);

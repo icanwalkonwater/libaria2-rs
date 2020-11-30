@@ -50,12 +50,12 @@ impl<U> Session<'_, U> {
     }
 }
 
-impl<U> Session<'_, U> {
-    /*fn cast_user_data(ptr: *mut std::ffi::c_void) -> Box<&'static U> {
+/*impl<U> Session<'_, U> {
+    fn cast_user_data(ptr: *mut std::ffi::c_void) -> Box<&'static U> {
         if ptr.is_null() {
             unsafe { Box::new(MaybeUninit::zeroed().assume_init()) }
         } else {
             unsafe { Box::new(&mut *(ptr as *mut U)) }
         }
-    }*/
-}
+    }
+}*/

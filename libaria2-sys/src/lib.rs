@@ -245,11 +245,11 @@ pub mod ffi {
         #[cxx_name = "getStatus"]
         pub unsafe fn status(self: &DownloadHandleWrapper) -> DownloadStatus;
         #[cxx_name = "getTotalLength"]
-        pub unsafe fn total_length(self: &DownloadHandleWrapper) -> usize;
+        pub unsafe fn total_len(self: &DownloadHandleWrapper) -> usize;
         #[cxx_name = "getCompletedLength"]
-        pub unsafe fn completed_length(self: &DownloadHandleWrapper) -> usize;
+        pub unsafe fn completed_len(self: &DownloadHandleWrapper) -> usize;
         #[cxx_name = "getUploadLength"]
-        pub unsafe fn upload_length(self: &DownloadHandleWrapper) -> usize;
+        pub unsafe fn upload_len(self: &DownloadHandleWrapper) -> usize;
         #[cxx_name = "getBitfield"]
         pub unsafe fn bitfield(self: &DownloadHandleWrapper) -> String;
         #[cxx_name = "getDownloadSpeed"]
@@ -259,7 +259,7 @@ pub mod ffi {
         #[cxx_name = "getInfoHash"]
         pub unsafe fn info_hash(self: &DownloadHandleWrapper) -> &CxxString;
         #[cxx_name = "getPieceLength"]
-        pub unsafe fn piece_length(self: &DownloadHandleWrapper) -> usize;
+        pub unsafe fn piece_len(self: &DownloadHandleWrapper) -> usize;
         #[cxx_name = "getNumPieces"]
         pub unsafe fn num_pieces(self: &DownloadHandleWrapper) -> u32;
         #[cxx_name = "getConnections"]
@@ -273,7 +273,7 @@ pub mod ffi {
         #[cxx_name = "getBelongsTo"]
         pub unsafe fn belongs_to(self: &DownloadHandleWrapper) -> u64;
         #[cxx_name = "getDir"]
-        pub unsafe fn directory(self: &DownloadHandleWrapper) -> &CxxString;
+        pub unsafe fn dir(self: &DownloadHandleWrapper) -> &CxxString;
         #[cxx_name = "getFiles"]
         pub unsafe fn files(self: &DownloadHandleWrapper) -> UniquePtr<CxxVector<FileDataWrapper>>;
         #[cxx_name = "getNumFiles"]
