@@ -1,5 +1,5 @@
 [package]
-name = "aria2-sys"
+name = "libaria2-sys"
 version = "0.1.0"
 authors = ["Lucas Malandrino <lucas.malandrino@gmail.com>"]
 edition = "2018"

@@ -3,32 +3,10 @@
 use crate::ffi::SessionHandle;
 use std::fmt::{Debug, Formatter};
 
+pub use cxx;
+
 pub type A2Gid = u64;
 pub type RunMode = ffi::RUN_MODE;
-
-#[derive(Copy, Clone, Debug)]
-pub enum DownloadEvent {
-    Start,
-    Pause,
-    Stop,
-    Complete,
-    Error,
-    BtComplete,
-}
-
-impl From<ffi::DownloadEvent> for DownloadEvent {
-    fn from(raw: ffi::DownloadEvent) -> Self {
-        match raw {
-            ffi::DownloadEvent::EVENT_ON_DOWNLOAD_START => DownloadEvent::Start,
-            ffi::DownloadEvent::EVENT_ON_DOWNLOAD_PAUSE => DownloadEvent::Pause,
-            ffi::DownloadEvent::EVENT_ON_DOWNLOAD_STOP => DownloadEvent::Stop,
-            ffi::DownloadEvent::EVENT_ON_DOWNLOAD_COMPLETE => DownloadEvent::Complete,
-            ffi::DownloadEvent::EVENT_ON_DOWNLOAD_ERROR => DownloadEvent::Error,
-            ffi::DownloadEvent::EVENT_ON_BT_DOWNLOAD_COMPLETE => DownloadEvent::BtComplete,
-            _ => unreachable!(),
-        }
-    }
-}
 
 #[rustfmt::skip]
 #[cxx::bridge(namespace = "aria2::bridge")]
@@ -132,8 +110,8 @@ pub mod ffi {
     }
 
     unsafe extern "C++" {
-        include!("aria2-sys/include/aria2_bridge.hpp");
-        include!("aria2-sys/include/DownloadHandleWrapper.hpp");
+        include!("libaria2-sys/include/aria2_bridge.hpp");
+        include!("libaria2-sys/include/DownloadHandleWrapper.hpp");
 
         #[namespace = "aria2"]
         type DownloadEvent;
@@ -331,6 +309,20 @@ impl Debug for ffi::DownloadStatus {
             Self::DOWNLOAD_COMPLETE => f.write_str("DOWNLOAD_COMPLETE"),
             Self::DOWNLOAD_ERROR => f.write_str("DOWNLOAD_ERROR"),
             Self::DOWNLOAD_REMOVED => f.write_str("DOWNLOAD_REMOVED"),
+            _ => unreachable!(),
+        }
+    }
+}
+
+impl Debug for ffi::DownloadEvent {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match *self {
+            Self::EVENT_ON_DOWNLOAD_START => f.write_str("EVENT_ON_DOWNLOAD_START"),
+            Self::EVENT_ON_DOWNLOAD_PAUSE => f.write_str("EVENT_ON_DOWNLOAD_PAUSE"),
+            Self::EVENT_ON_DOWNLOAD_COMPLETE => f.write_str("EVENT_ON_DOWNLOAD_COMPLETE"),
+            Self::EVENT_ON_BT_DOWNLOAD_COMPLETE => f.write_str("EVENT_ON_BT_DOWNLOAD_COMPLETE"),
+            Self::EVENT_ON_DOWNLOAD_STOP => f.write_str("EVENT_ON_DOWNLOAD_STOP"),
+            Self::EVENT_ON_DOWNLOAD_ERROR => f.write_str("EVENT_ON_DOWNLOAD_ERROR"),
             _ => unreachable!(),
         }
     }

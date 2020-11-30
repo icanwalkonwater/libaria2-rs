@@ -4,8 +4,8 @@
 #include <algorithm>
 #include <functional>
 #include "rust/cxx.h"
-#include "aria2-sys/include/aria2_bridge.hpp"
-#include "aria2-sys/src/lib.rs.h"
+#include "libaria2-sys/include/aria2_bridge.hpp"
+#include "libaria2-sys/src/lib.rs.h"
 
 namespace aria2 {
     namespace bridge {
@@ -17,7 +17,7 @@ namespace aria2 {
         SessionHandle sessionNew(
                 const RKeyVals& rustOptions,
                 const SessionConfigFfi& rustConfig,
-                const rust::Fn<int(SessionHandle s, DownloadEvent e, A2Gid g, size_t user)>& eventCallback
+                const rust::Fn<int(SessionHandle s, DownloadEvent e, A2Gid g, size_t user)> eventCallback
         ) {
             aria2::KeyVals options;
             __convertKeyVals(rustOptions, options);
