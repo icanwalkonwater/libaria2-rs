@@ -1,4 +1,4 @@
-use libaria2_sys::{A2Gid, cxx, ffi};
+use libaria2_sys::{cxx, ffi, A2Gid};
 
 use crate::session::PollContext;
 
@@ -136,7 +136,7 @@ impl DownloadHandle<'_> {
 }
 
 pub struct FileData {
-    inner: cxx::UniquePtr<ffi::FileDataWrapper>
+    inner: cxx::UniquePtr<ffi::FileDataWrapper>,
 }
 
 impl PollContext<'_> {

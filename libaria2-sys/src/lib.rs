@@ -66,38 +66,12 @@ pub mod ffi {
         URI_WAITING,
     }
 
-    /*#[derive(Clone)]
-    #[repr(C)]
-    pub struct FileData {
-        pub index: i32,
-        pub path: String,
-        pub length: isize,
-        pub completed_length: isize,
-        pub selected: bool,
-        pub uris: Vec<ffi::UriData>,
-    }*/
-
-    /*#[derive(Clone)]
-    pub struct UriData {
-        pub uri: String,
-        pub status: UriStatus,
-    }*/
-
     #[repr(u32)]
     pub enum BtFileMode {
         BT_FILE_MODE_NONE,
         BT_FILE_MODE_SINGLE,
         BT_FILE_MODE_MULTI,
     }
-
-    /*#[derive(Clone)]
-    pub struct BtMetaInfoData {
-        pub announce_list: Vec<Vec<String>>,
-        pub comment: String,
-        pub creation_date: i32,
-        pub mode: BtFileMode,
-        pub name: String,
-    }*/
 
     #[repr(u32)]
     pub enum DownloadStatus {
