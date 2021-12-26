@@ -2,7 +2,7 @@ use libaria2_sys::{cxx, ffi, A2Gid};
 
 use crate::session::PollContext;
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum DownloadStatus {
     Active,
     Waiting,

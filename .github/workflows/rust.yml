@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Install aria2
-      run: sudo apt-get install aria2
+    - name: Install aria2 dev files
+      run: sudo apt-get install libaria2-0-dev
       
     - uses: actions/checkout@v2
     

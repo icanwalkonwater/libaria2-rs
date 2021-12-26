@@ -1,6 +1,27 @@
 # libaria2-rs
 Provides unsafe rust bindings for [aria2](https://aria2.github.io/).
 
+## Goals and non-goals
+
+* Providing unsafe bindings to the official [libaria2 API](http://aria2.github.io/manual/en/html/libaria2.html).
+* Providing a safe wrapper around these unsafe bindings.
+* Not being a Rust version of `aria2c`.
+* Not rewriting `aria2` in Rust.
+
+## Roadmap
+
+(unsafe) refers to `libaria2-sys` whereas (safe) refers to `libaria2`.
+
+- [x] (unsafe) Link to the installed `libaria2.so`.
+- [x] (unsafe) Provide bindings to all functions and opaque types.
+- [x] (safe) Safe context and session.
+- [x] (safe) `DownloadHandle` must live only for one poll.
+- [ ] (unsafe) Provide access to all fields of opaque types.
+- [ ] (unsafe) Allow closure instead of function for the event callback.
+- [ ] (unsafe) Avoid copying as much as possible at the FFI frontier.
+- [ ] (safe) Avoid copying as much as possible between the unsafe bindings and the safe wrapper.
+- [ ] (unsafe & safe) Add the documentation from the original library.
+
 ## Testing
 Since `libaria2` make heavy use of static objets and don't seem
 to be able to be init and deinit multiple times in the same process,
