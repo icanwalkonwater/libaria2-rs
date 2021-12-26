@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Install aria1
+    - name: Install aria2
       run: apt-get install aria2
       
     - uses: actions/checkout@v2
