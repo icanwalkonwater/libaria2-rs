@@ -21,6 +21,7 @@ Provides unsafe rust bindings for [aria2](https://aria2.github.io/).
 - [ ] (unsafe) Avoid copying as much as possible at the FFI frontier.
 - [ ] (safe) Avoid copying as much as possible between the unsafe bindings and the safe wrapper.
 - [ ] (unsafe & safe) Add the documentation from the original library.
+- [ ] (unsafe) Support for windows
 
 ## Testing
 Since `libaria2` make heavy use of static objets and don't seem

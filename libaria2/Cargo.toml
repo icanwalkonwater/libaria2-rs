@@ -1,10 +1,14 @@
 [package]
 name = "libaria2"
-version = "0.0.1"
+description = "Safe wrapper around libaria2-sys"
+version = "0.1.0"
 authors = ["Lucas Malandrino <lucas.malandrino@gmail.com>"]
 edition = "2021"
+rust-version = "1.56"
+license = "MIT AND APACHE-2.0"
+repository = "https://github.com/icanwalkonwater/libaria2-rs"
 
 [dependencies]
-libaria2-sys = { path = "../libaria2-sys" }
+libaria2-sys = { version = "0.1.0", path = "../libaria2-sys" }
 thiserror = "1.0.30"
 log = "0.4.14"

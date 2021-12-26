@@ -1,9 +1,13 @@
 [package]
 name = "libaria2-sys"
+description = "Unsafe bindings for the libaria2 cpp library"
 version = "0.1.0"
 authors = ["Lucas Malandrino <lucas.malandrino@gmail.com>"]
 edition = "2021"
 links = "aria2"
+rust-version = "1.56"
+license = "MIT AND Apache-2.0"
+repository = "https://github.com/icanwalkonwater/libaria2-rs"
 
 [dependencies]
 cxx = "^1.0.60"
@@ -13,4 +17,4 @@ cxx-build = "^1.0.60"
 pkg-config = "^0.3.24"
 
 [dev-dependencies]
-nix = "0.23.1"
+nix = "^0.23.1"
