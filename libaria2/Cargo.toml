@@ -2,9 +2,9 @@
 name = "libaria2"
 version = "0.0.1"
 authors = ["Lucas Malandrino <lucas.malandrino@gmail.com>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 libaria2-sys = { path = "../libaria2-sys" }
-thiserror = "1.0.22"
-log = "0.4.11"
+thiserror = "1.0.30"
+log = "0.4.14"
