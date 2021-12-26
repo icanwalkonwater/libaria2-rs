@@ -16,7 +16,7 @@ jobs:
 
     steps:
     - name: Install aria2
-      run: apt-get install aria2
+      run: sudo apt-get install aria2
       
     - uses: actions/checkout@v2
     
