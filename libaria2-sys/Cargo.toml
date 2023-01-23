@@ -17,4 +17,4 @@ cxx-build = "^1.0.60"
 pkg-config = "^0.3.24"
 
 [dev-dependencies]
-nix = "^0.23.1"
+nix = "^0.26.2"
